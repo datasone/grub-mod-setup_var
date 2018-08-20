@@ -1,0 +1,12 @@
+#! /bin/bash
+set -e
+
+. "@builddir@/grub-core/modinfo.sh"
+
+out=`echo all_functional_test | @builddir@/grub-shell --timeout=3600`
+
+if [ "$(echo "$out" | tail -n 1)" != "ALL TESTS PASSED" ]; then
+  echo "Functional test failure: $out"
+  exit 1
+fi
+

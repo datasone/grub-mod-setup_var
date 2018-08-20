@@ -1,0 +1,130 @@
+#!/bin/sh
+
+# Make GRUB rescue image
+# Copyright (C) 1999,2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012  Free Software Foundation, Inc.
+#
+# GRUB is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# GRUB is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
+
+# Initialize some variables.
+
+compression=auto
+format=
+source=
+
+# Usage: usage
+# Print the usage.
+usage () {
+    formats="i386-coreboot i386-multiboot i386-pc i386-pc-pxe i386-efi i386-ieee1275 i386-qemu x86_64-efi mipsel-yeeloong-flash mipsel-fuloong2f-flash mipsel-loongson-elf powerpc-ieee1275 sparc64-ieee1275-raw sparc64-ieee1275-aout ia64-efi mips-arc mipsel-qemu_mips-elf mips-qemu_mips-flash  mipsel-qemu_mips-flash  mips-qemu_mips-elf"
+    gettext_printf "Usage: %s [OPTION] SOURCE...\n" "$self"
+    gettext "Generate a standalone image (containing all modules) in the selected format"
+    echo
+    print_option_help "-h, --help" "$(gettext "print this message and exit")"
+    print_option_help "-o, --output=$(gettext FILE)" "$(gettext "save output in FILE [required]")"
+    print_option_help "-O, --format=$(gettext "FORMAT")" "$(gettext "generate an image in FORMAT")"; echo
+    print_option_help "" "$(gettext "available formats:") $formats"
+    echo
+    print_option_help "-C, --compression=(xz|none|auto)" "$(gettext "choose the compression to use for core image")"
+    grub_print_install_files_help
+    echo
+    gettext "Report bugs to <bug-grub@gnu.org>."; echo
+}
+
+# Check the arguments.
+while test $# -gt 0
+do
+    grub_process_install_options "$@"
+    case "$grub_process_install_options_consumed" in
+	1) shift; continue;;
+	2) shift; shift; continue;;
+    esac
+
+    option=$1
+    shift
+
+    case "$option" in
+    -h | --help)
+	usage
+	exit 0 ;;
+
+    -o | --output)
+	output_image=`argument $option "$@"`; shift ;;
+    --output=*)
+	output_image=`echo "$option" | sed 's/--output=//'` ;;
+
+    --compression | -C)
+	compression=`argument $option "$@"`; shift ;;
+    --compression=*)
+	compression=`echo "${option}" | sed 's/--compression=//'` ;;
+
+    --format | -O)
+	format=`argument $option "$@"`; shift ;;
+    --format=*)
+	format=`echo "${option}" | sed 's/--format=//'` ;;
+
+    *)
+	source="${source} ${option} $@"; break ;;
+    esac
+done
+
+if [ "x${output_image}" = x ] ; then
+  gettext "output file must be specified" >&2
+  echo >&2
+  usage
+  exit 1
+fi
+
+if [ "x${format}" = x ] ; then
+  gettext "Target format not specified (use the -O option)." >&2
+  echo >&2
+  exit 1
+fi
+
+if [ "x$source_directory" = x ] ; then
+    cpu="`echo $format | awk -F - '{ print $1; }'`"
+    platform="`echo $format | awk -F - '{ print $2; }'`"
+    case "$platform" in
+	yeeloong | fuloong | fuloong2f | fuloong2e)
+	    platform=loongson ;;
+    esac
+    case "$cpu-$platform" in
+	mips-loongson)
+	    cpu=mipsel ;;
+    esac
+    source_directory="${libdir}/@PACKAGE@/$cpu-$platform"
+fi
+
+. "${source_directory}"/modinfo.sh
+
+set $grub_mkimage dummy
+if test -f "$1"; then
+    :
+else
+    echo "$1: Not found." 1>&2
+    exit 1
+fi
+
+memdisk_dir="`mktemp -d "${TMPDIR:-/tmp}/tmp.XXXXXXXXXX"`" || exit 1
+grub_install_files "${source_directory}" "${memdisk_dir}"/boot/grub "${grub_modinfo_target_cpu}-${grub_modinfo_platform}"
+for file in $source; do
+    cp -f "$file" "${memdisk_dir}"/"$file";
+done
+
+memdisk_img=`mktemp "${TMPDIR:-/tmp}/tmp.XXXXXXXXXX"` || exit 1
+
+(cd "${memdisk_dir}"; tar -cf - * $source) > "${memdisk_img}"
+rm -rf "${memdisk_dir}"
+"$grub_mkimage" -O "${format}" -C "$compression" -d "${source_directory}" -m "${memdisk_img}" -o "$output_image" --prefix='(memdisk)/boot/grub' memdisk tar $grub_decompression_module $modules
+rm -rf "${memdisk_img}"
+
+exit 0
