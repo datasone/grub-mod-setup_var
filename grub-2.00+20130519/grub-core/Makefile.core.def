@@ -636,6 +636,14 @@ module = {
 };
 
 module = {
+    name = setup_var;
+
+    common = commands/efi/setup_var.c;
+    
+    enable = efi;
+};
+
+module = {
   name = lsefi;
   common = commands/efi/lsefi.c;
   enable = efi;
