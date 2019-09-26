@@ -1,7 +1,7 @@
 # A modified grub allowing tweaking hidden BIOS settings.
 based on grub with [setup_var patch (invalid link now)](http://luna.vmars.tuwien.ac.at/~froemel/insydeh2o_efi/grub2-add-setup_var-cmd.patch) and [setup_var2 patch](https://habr.com/post/190354/) with setup\_var\_3 patch as a wordaround to duplicate Setup vairable.
 
-As said in a [guide](https://github.com/acidanthera/AptioFixPkg#verifymsre2) about changing hidden "CFG Lock" BIOS setting, by using a modified GRUB shell, we can change any hidden UEFI BIOS settings. But here comes some errors on my Dell XPS 8930, so I have the shell patched and added a new command `setup_var_3` for this situation.
+As said in a [guide](https://github.com/acidanthera/AppleSupportPkg#verifymsre2) about changing hidden "CFG Lock" BIOS setting, by using a modified GRUB shell, we can change any hidden UEFI BIOS settings. But here comes some errors on my Dell XPS 8930, so I have the shell patched and added a new command `setup_var_3` for this situation.
 
 ## The problem
 On my PC, when I try to read/write values using the method above. It obtained a Setup variable but producing an error saying the offset is out of range. With extra investigation, I found there are two Setup variables in BIOS and the error comes from the very small (only 9 bytes in my situation) Setup variable.
