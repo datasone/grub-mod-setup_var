@@ -73,6 +73,6 @@ Generating modified GRUB shell:
 
 ```
 cd <temporary install prefix>
-./bin/mkstandalone -O x86_64-efi -o modGRUBShell.efi
+./bin/grub-mkstandalone -O x86_64-efi -o modGRUBShell.efi
 
 ```
