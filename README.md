@@ -76,3 +76,10 @@ cd <temporary install prefix>
 ./bin/grub-mkstandalone -O x86_64-efi -o modGRUBShell.efi
 
 ```
+
+Or use the mod file on an installed grub:
+
+```
+cd <temporary install prefix>
+(sudo) cp lib/grub/x86_64-efi/setup_var.mod <grub folder>/x86_64-efi/
+```
