@@ -83,3 +83,6 @@ Or use the mod file on an installed grub:
 cd <temporary install prefix>
 (sudo) cp lib/grub/x86_64-efi/setup_var.mod <grub folder>/x86_64-efi/
 ```
+```
+insmod setup_var
+```
