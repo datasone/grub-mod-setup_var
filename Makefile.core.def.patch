@@ -1,0 +1,17 @@
+--- grub-2.04/grub-core/Makefile.core.def	2019-04-23 16:54:47.000000000 +0800
++++ Makefile.core.def	2021-02-19 21:59:20.542634342 +0800
+@@ -769,6 +769,14 @@
+ };
+ 
+ module = {
++  name = setup_var;
++
++  common = commands/efi/setup_var.c;
++
++  enable = efi;
++};
++
++module = {
+   name = lsefisystab;
+ 
+   common = commands/efi/lsefisystab.c;
