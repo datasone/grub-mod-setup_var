@@ -111,7 +111,7 @@ grub_cmd_setup_var (grub_command_t cmd,
     grub_uint16_t isMode3 = 0;
     grub_uint16_t isModeVS = 0;
     grub_uint16_t isModeCV = 0;
-    if (cmd->name[CMDCHECK_SETUP_VAR2] != 0) isMode2 = 1;
+    if (cmd->name[CMDCHECK_SETUP_VAR2] == '2') isMode2 = 1;
     if (grub_strlen(cmd->name) > CMDCHECK_SETUP_DVARS_START_INDEX && cmd->name[CMDCHECK_SETUP_DVARS_START_INDEX] != 0)
     {
         char name_suffix[11];
@@ -201,9 +201,11 @@ grub_cmd_setup_var (grub_command_t cmd,
             grub_printf("status: 0x%02x\n", (grub_uint32_t) status);
         }
 
-        if(! status && ((name_size == INSYDE_SETUP_VAR_NSIZE && 0 == grub_memcmp(name, INSYDE_SETUP_VAR, name_size)) ||
-            (isMode2 && name_size == INSYDE_CUSTOM_VAR_NSIZE && 0 == grub_memcmp(name, INSYDE_CUSTOM_VAR, name_size)) ||
-            (isModeCV && name_size == custom_varname_size && 0 == grub_memcmp(name, custom_varname, name_size))))
+        if(! status && (
+                (!isModeCV && name_size == INSYDE_SETUP_VAR_NSIZE && 0 == grub_memcmp(name, INSYDE_SETUP_VAR, name_size)) ||
+                (isMode2 && name_size == INSYDE_CUSTOM_VAR_NSIZE && 0 == grub_memcmp(name, INSYDE_CUSTOM_VAR, name_size)) ||
+                (isModeCV && name_size == custom_varname_size && 0 == grub_memcmp(name, custom_varname, name_size))
+                ))
         {
             grub_printf("var name: ");
             print_varname(name);
