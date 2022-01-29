@@ -98,7 +98,7 @@ grub_cmd_setup_var (grub_command_t cmd,
     grub_efi_uintn_t setup_var_size = INSYDE_SETUP_VAR_SIZE;
     grub_uint8_t set_value = 0x0;
     grub_efi_uint32_t setup_var_attr = 0x7;
-    char* endptr;
+    const char* endptr;
 
     grub_uint16_t var_size = 0;
     grub_efi_char16_t* custom_varname = NULL;
@@ -266,7 +266,7 @@ grub_cmd_setup_var (grub_command_t cmd,
                 }
                 if(status)
                 {
-                    return grub_error(GRUB_ERR_INVALID_COMMAND, "can't get variable using efi (error: 0x%016x)", status);
+                    return grub_error(GRUB_ERR_INVALID_COMMAND, "can't get variable using efi (error: 0x%016lx)", status);
                 }
 		if (isModeCV)
 		{
@@ -325,7 +325,7 @@ grub_cmd_setup_var (grub_command_t cmd,
                     tmp_data);
                 if(status)
                 {
-                    return grub_error(GRUB_ERR_INVALID_COMMAND, "can't set variable using efi (error: 0x%016x)", status);
+                    return grub_error(GRUB_ERR_INVALID_COMMAND, "can't set variable using efi (error: 0x%016lx)", status);
                 }
             }
             else if (isModeVS)
@@ -348,7 +348,7 @@ grub_cmd_setup_var (grub_command_t cmd,
                                         tmp_data);
                     if(status)
                     {
-                        return grub_error(GRUB_ERR_INVALID_COMMAND, "can't set variable using efi (error: 0x%016x)", status);
+                        return grub_error(GRUB_ERR_INVALID_COMMAND, "can't set variable using efi (error: 0x%016lx)", status);
                     }
                 }
             }
@@ -372,7 +372,7 @@ grub_cmd_setup_var (grub_command_t cmd,
                                         tmp_data);
                     if(status)
                     {
-                        return grub_error(GRUB_ERR_INVALID_COMMAND, "can't set variable using efi (error: 0x%016x)", status);
+                        return grub_error(GRUB_ERR_INVALID_COMMAND, "can't set variable using efi (error: 0x%016lx)", status);
                     }
                 }
             }
