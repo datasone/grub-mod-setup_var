@@ -97,7 +97,7 @@ So, the variable controlling "Ipv6 PXE Support" is in the varstore with name "Ne
 
 ## Build Notes
 
-This repo only contains the patch files now: `setup_var.c` and `Makefile.core.def.patch`. So [grub](https://www.gnu.org/software/grub/grub-download.html) source is required. The patch has been tested upon the newest release (i.e. 2.04).
+This repo only contains the patch files now: `setup_var.c` and `Makefile.core.def.patch`. So [grub](https://www.gnu.org/software/grub/grub-download.html) source is required. The patch has been tested upon the newest release (i.e. 2.06).
 
 To apply patch to grub source:
 
