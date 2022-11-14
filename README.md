@@ -1,5 +1,7 @@
 # A patch to grub for writing UEFI varstores
 
+### Deprecation: This tool have been rewritten [as a standalone UEFI application](https://github.com/datasone/setup_var.efi) for more clear error results, ability to be automated and aarch64 support.
+
 This repo is based on [setup_var patch (invalid link now)](http://luna.vmars.tuwien.ac.at/~froemel/insydeh2o_efi/grub2-add-setup_var-cmd.patch) and [setup_var2 patch](https://habr.com/post/190354/), more new commands are added to handle different situations. It contains a patch to grub, which adds several commands to grub's rescue shell. This tool allows read/write access to the UEFI varstore, and is usually used to change BIOS settings that are hidden from the UI.
 
 This tool's binary release is a single efi executable, which will fail to grub rescue shell due to no grub config files.
